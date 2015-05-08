@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html ng-app="generator">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Generator</title>
+    <link rel='stylesheet' href='../libs/bootstrap-3.3.4-dist/css/bootstrap.css'>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../libs/bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../libs/angular.js"></script>
+    <script type="text/javascript" src="../src/Generator.js"></script>
+</head>
+<body ng-controller="common">
+
+<div class="row">
+    <div class="col-lg-3 col-md-3"></div>
+    <div class="col-lg-5 col-md-5">
+        <h1>Generator</h1>
+
+        <div style="float:right;">
+            <label>Your words</label>
+
+            <div ng-repeat="word in wordsArr">
+                <span>{{word}}</span>
+            </div>
+        </div>
+        <div class="form-inline">
+            <!--<label for="exampleInputEmail1">Text field</label>-->
+
+            <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Input any word"
+                   ng-model="word">
+            <input type="button" class="btn btn-success" value="Add" ng-click="addWord()">
+            <input type="button" class="btn btn-info" value="Clear all" ng-click="removeWords()">
+
+
+        </div>
+
+        <div class="radio">
+            <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios1" ng-model="type" value="2words" checked>
+                2 words
+            </label>
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" name="optionsRadios" id="optionsRadios2" ng-model="type" value="3words">
+                3 words
+            </label>
+        </div>
+        <button type="button" class="btn btn-default" ng-click="generate(type)">Generate</button>
+        <div ng-show="resultArr.length!=0">
+            <br>
+            <label>Result</label>
+            <br>
+         <span ng-repeat="result in resultArr">
+            <{{result}}>
+         </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-3 col-md-3"></div>
+</div>
+
+</body>
+</html>
