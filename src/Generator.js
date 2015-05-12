@@ -1,28 +1,65 @@
 'use strict';
-angular.module("generator", []);
+angular.module("generator", [])
 
-angular.module('generator').controller("common", [
-    "$scope", "$http", "$window", "$rootScope", "$location", '$filter',
-    function ($scope, $http, $window, $rootScope, $location, $filter) {
+.service('Words', function(){
+    this.getWords = function () {
+        var words = [];
+        if (localStorage["names"]) words = JSON.parse(localStorage["names"]);
+        return words;
+    };
+    this.addWord = function (text) {
+        localStorage["names"] = JSON.stringify(text);
+        return true;
+    };
+    this.clearWords = function () {
+        window.localStorage.clear();
+        return true
+    };
+})
+
+.controller("common", [
+    "$scope", "$http", "$window", "$rootScope", "$location", '$filter', 'Words',
+    function ($scope, $http, $window, $rootScope, $location, $filter, Words) {
+
+        $scope.type = "2words";
         $scope.word = '';
-        $scope.wordsArr = [];
+        $scope.resultArr = [];
+        $scope.wordsArr = Words.getWords();
+        $scope.chekedArr = [];
+
+        $scope.checked = function (index) {
+            $scope.chekedArr[index+1] = {ind:index, stat:!$scope.chekedArr[index+1]};
+        };
+
+        $scope.delChecked = function () {
+            var ind = 0;
+            $scope.chekedArr.forEach(function(item){
+                if (item.stat) {
+                    $scope.wordsArr. splice(item.ind-ind,1);
+                    ind++;
+                    Words.addWord($scope.wordsArr);
+                    $scope.resultArr = [];
+                }
+            });
+            $scope.word = '';
+            $scope.chekedArr = [];
+        };
 
         $scope.addWord = function () {
             if (!~$scope.wordsArr.indexOf($scope.word)) {
                 $scope.wordsArr.push($scope.word);
-
+                Words.addWord($scope.wordsArr);
             }
             $scope.word = '';
-
         };
 
         $scope.removeWords = function () {
             $scope.word = '';
             $scope.wordsArr = [];
             $scope.resultArr = [];
+            $scope.chekedArr = [];
+            Words.clearWords();
         };
-
-        $scope.resultArr = [];
 
         $scope.generate = function (val) {
             $scope.resultArr = [];
@@ -50,5 +87,16 @@ angular.module('generator').controller("common", [
 
                 }
             }
-        }
-    }]);
+        };
+
+        $scope.shuffleWords = function () {
+            var currentIndex = $scope.resultArr.length, temporaryValue, randomIndex ;
+            while (0 !== currentIndex) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                temporaryValue = $scope.resultArr[currentIndex];
+                $scope.resultArr[currentIndex] = $scope.resultArr[randomIndex];
+                $scope.resultArr[randomIndex] = temporaryValue;
+            }
+        };
+}]);
